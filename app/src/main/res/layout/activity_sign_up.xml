@@ -5,6 +5,109 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".SignUp">
+
+    <EditText
+        android:id="@+id/upName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="47dp"
+        android:background="@drawable/rounded_borders"
+        android:ems="10"
+        android:fontFamily="@font/poppins_medium"
+        android:hint="User name"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:text="Name"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upEmail" />
+
+    <EditText
+        android:id="@+id/upEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="47dp"
+        android:background="@drawable/rounded_borders"
+        android:ems="10"
+        android:fontFamily="@font/poppins_medium"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="312dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Sign Up"
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/upPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="47dp"
+        android:background="@drawable/rounded_borders"
+        android:ems="10"
+        android:fontFamily="@font/poppins_medium"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upName" />
+
+    <Button
+        android:id="@+id/btSignup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginEnd="100dp"
+        android:background="@drawable/auth_button"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Sign Up"
+        android:textColorLink="@color/second"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upPassword" />
+
+    <Button
+        android:id="@+id/toSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/auth_button"
+        android:backgroundTint="@android:color/transparent"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Sign In"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

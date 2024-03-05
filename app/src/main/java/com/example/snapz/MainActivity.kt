@@ -1,6 +1,7 @@
 package com.example.snapz
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     //Views
     lateinit var menu: BottomNavigationView
-    lateinit var frame: ConstraintLayout
+    lateinit var frame: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         //ClickListeners
         menu.setOnNavigationItemSelectedListener{menuClicked(it.itemId)}
+
     }
 
     fun menuClicked(id: Int): Boolean{

@@ -1,0 +1,47 @@
+[33mcommit d939d19dad498118d759ce44f7c4312d9152acec[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mauth[m[33m, [m[1;31morigin/auth[m[33m)[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Tue Mar 5 11:47:34 2024 +0200
+
+    Added logic for sign up activity
+
+[33mcommit 9b24a5b21cc23ac5e8f88091b2db48dde75b8a81[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Tue Mar 5 00:37:05 2024 +0200
+
+    Made activity_sign_up.xml design, added drawable files for the background
+
+[33mcommit 1e76e6b7e11cbb92945939614a72aac972975b1b[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Tue Mar 5 00:01:56 2024 +0200
+
+    Added (poppins) fonts
+
+[33mcommit 8bb59de20525d4972e89a3f5207717fff515d148[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Mon Mar 4 23:54:19 2024 +0200
+
+    Created sign up/in activity, created firebase helper class
+
+[33mcommit 8757cbc7aca6887d374c91fdd424ee0d42c1622a[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Mon Mar 4 23:29:09 2024 +0200
+
+    Added implementation of the firebase auth, realtime database and storage
+
+[33mcommit b99b9ea0ab91962c30626775f6f377be1ac224bc[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Mon Mar 4 20:08:00 2024 +0200
+
+    Added second color in color.xml
+
+[33mcommit 170c80cecbab36176b97edcb42e65d07cb80b3f3[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Mon Mar 4 20:00:46 2024 +0200
+
+    Update activity_main.xml
+
+[33mcommit eaf2b4e47e6de402b2f61e0be90deb366df87c9a[m
+Author: LoonaHelluva <mussakurtseitov@gmail.com>
+Date:   Mon Mar 4 19:34:58 2024 +0200
+
+    Initialized project into GitHub Project version: 0.01

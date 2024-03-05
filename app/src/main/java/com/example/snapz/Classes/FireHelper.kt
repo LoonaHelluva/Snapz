@@ -5,7 +5,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 class FireHelper {
     companion object{
-        private val auth = FirebaseAuth.getInstance()
+        val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
         val Chats = FirebaseDatabase.getInstance().getReference("Chats")

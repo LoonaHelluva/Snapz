@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -51,29 +52,20 @@ class SignUp : AppCompatActivity() {
     }
 
     fun signUpCLicked(){
-        if(upEmail.text.toString().trim() != "" &&
-            upName.text.toString().trim() != "" &&
-            upPassword.text.toString().trim() != ""){
 
-            FireHelper.auth.createUserWithEmailAndPassword(upEmail.text.toString().trim(), upPassword.text.toString().trim()).addOnCompleteListener{
-                if(it.isSuccessful){
-                    val user = User(
-                        id = FireHelper.auth.uid!!,
-                        name = upName.text.toString().trim(),
-                        email = upEmail.text.toString().trim()
-                    )
+        val email: String = upEmail.text.toString().trim()
+        val name: String = upName.text.toString().trim()
+        val password: String = upPassword.text.toString().trim()
 
-                    FireHelper.Users.child(user.id).setValue(user).addOnCompleteListener {
-                        if(it.isSuccessful){
-                            Log.i("Realtime", "New user added successfully")
-                        }
-                    }
-                }
-                else{
-                    Log.e("Auth", it.exception.toString())
-                }
-            }
+        if(email != "" &&
+             name != "" &&
+             password != ""){
 
+            FireHelper.createNewUser(email = email, password = password, name = name, this)
+        }
+        else{
+            Toast.makeText(this,"Fields can't be empty", Toast.LENGTH_SHORT).show()
         }
     }
+
 }

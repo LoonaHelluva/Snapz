@@ -17,4 +17,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.snapz
 
+import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.os.Bundle
@@ -42,13 +43,19 @@ class SignUp : AppCompatActivity() {
         btSignUp = findViewById(R.id.btSignup)
 
 
-
         //On click buttons listeners
         btSignUp.setOnClickListener{signUpCLicked()}
+
+        toSignIn.setOnClickListener {toSignInClicked()}
+
+
+        //Checking if user is authorized
+        checkUser()
     }
 
     fun toSignInClicked(){
-
+        val intent = Intent(this, SignIn::class.java)
+        startActivity(intent)
     }
 
     fun signUpCLicked(){
@@ -65,6 +72,14 @@ class SignUp : AppCompatActivity() {
         }
         else{
             Toast.makeText(this,"Fields can't be empty", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun checkUser(){
+        if(FireHelper.user != null){
+            val intent = Intent(this, MainActivity::class.java)
+
+            startActivity(intent)
         }
     }
 

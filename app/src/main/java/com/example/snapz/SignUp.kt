@@ -69,6 +69,7 @@ class SignUp : AppCompatActivity() {
              password != ""){
 
             FireHelper.createNewUser(email = email, password = password, name = name, this)
+            startActivity(Intent(this, MainActivity::class.java))
         }
         else{
             Toast.makeText(this,"Fields can't be empty", Toast.LENGTH_SHORT).show()

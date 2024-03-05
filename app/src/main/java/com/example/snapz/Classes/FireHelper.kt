@@ -26,7 +26,8 @@ class FireHelper {
                         val user = User(
                             id = auth.uid!!,
                             name = name.trim(),
-                            email = email.trim()
+                            email = email.trim(),
+                            profileImage = "https://png.pngtree.com/png-clipart/20191120/original/pngtree-outline-user-icon-png-image_5045523.jpg"
                         )
 
                         Users.child(user.id).setValue(user).addOnCompleteListener {

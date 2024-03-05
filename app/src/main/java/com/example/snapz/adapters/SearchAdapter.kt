@@ -1,5 +1,6 @@
 package com.example.snapz.adapters
 
+import android.content.Intent
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
@@ -10,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.snapz.Chat
 import com.example.snapz.Classes.User
 import com.example.snapz.R
 
@@ -37,6 +39,13 @@ class SearchAdapter(view: View, users: ArrayList<User>) : RecyclerView.Adapter<S
         Log.d("User", "Got user ${users[position].name}")
         Glide.with(holder.itemView.context).load(users[position].profileImage).into(holder.userImage)
         holder.userName.text = users[position].name
+
+        holder.userName.setOnClickListener{
+            val intent = Intent(holder.itemView.context, Chat::class.java)
+            intent.putExtra("userId", users[position].id)
+            intent.putExtra("userName", users[position].name)
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
 }

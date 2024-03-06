@@ -55,7 +55,7 @@ class MessageAdapter(messages: ArrayList<MessageModel>) : RecyclerView.Adapter<M
             else{
                 holder.messageSent.visibility = View.GONE
 
-                Glide.with(holder.itemView.context).load(link).into(holder.imageSent)
+                Glide.with(holder.itemView.context).load(link).fitCenter().into(holder.imageSent)
             }
         }
         else{
@@ -69,7 +69,7 @@ class MessageAdapter(messages: ArrayList<MessageModel>) : RecyclerView.Adapter<M
             else{
                 holder.messageRecived.visibility = View.GONE
 
-                Glide.with(holder.itemView.context).load(link).into(holder.imageRecived)
+                Glide.with(holder.itemView.context).load(link).fitCenter().into(holder.imageRecived)
             }
         }
     }

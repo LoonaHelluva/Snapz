@@ -154,7 +154,7 @@ class Chat : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(data?.data != null){
-
+            FireHelper.uploadFileToStorage(this, data.data!!, chatId, me.id)
         }
     }
 

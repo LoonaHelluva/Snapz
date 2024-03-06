@@ -1,5 +1,6 @@
 package com.example.snapz
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Message
 import android.widget.Adapter
@@ -95,6 +96,8 @@ class Chat : AppCompatActivity() {
 
         chatName.text = chatWithName
 
+
+
         //Getting me
         getMe()
 
@@ -114,6 +117,7 @@ class Chat : AppCompatActivity() {
             }
         }
 
+        chooseFile.setOnClickListener { getFile() }
         //Firebase listener
 
         FireHelper.Chats.child(chatId).child("Messages").addChildEventListener(object: ChildEventListener{
@@ -146,6 +150,20 @@ class Chat : AppCompatActivity() {
         })
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(data?.data != null){
+
+        }
+    }
+
+    fun getFile(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+
+        startActivityForResult(intent, 1)
+    }
 
     fun getMe(){
         FireHelper.Users.child(FireHelper.user!!.uid).get().addOnCompleteListener {

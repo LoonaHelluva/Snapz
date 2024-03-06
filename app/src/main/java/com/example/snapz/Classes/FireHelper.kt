@@ -1,10 +1,14 @@
 package com.example.snapz.Classes
 
+import android.content.ContentResolver
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import android.webkit.MimeTypeMap
 import com.example.snapz.Chat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import org.w3c.dom.Text
 
 class FireHelper {
@@ -14,7 +18,47 @@ class FireHelper {
 
         val Chats = FirebaseDatabase.getInstance().getReference("Chats")
         val Users = FirebaseDatabase.getInstance().getReference("Users")
+        val Storage = FirebaseStorage.getInstance().getReference()
 
+
+        fun uploadFileToStorage(context: Context, uri: Uri, chatId: String, sender: String){
+            val imageRef = Storage.child(fileName(context, uri))
+
+            val uploadTask = imageRef.putFile(uri).continueWithTask { task ->
+                if(!task.isSuccessful){
+                    task.exception.let { throw it!! }
+                }
+
+                return@continueWithTask imageRef.downloadUrl
+            }.addOnCompleteListener {
+                if(it.isSuccessful){
+
+                    val realtime = Chats.child(chatId).child("Messages")
+
+                    val message = MessageModel(
+                        id =  realtime.push().key.toString(),
+                        type = "Image",
+                        link = it.result.toString(),
+                        text = "",
+                        sender = sender
+                    )
+
+                    realtime.child(message.id).setValue(message)
+                }
+            }
+        }
+
+        fun getType(context: Context, uri: Uri) : String{
+            val contentResolver: ContentResolver = context.contentResolver
+            return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri)).toString()
+        }
+
+        fun fileName(context: Context, uri:Uri) : String{
+            val name = System.currentTimeMillis().toString()
+            val type = getType(context, uri)
+
+            return name + "." + type
+        }
 
         fun createNewUser(email: String, password: String, name: String, context: Context) {
             if (email.trim() != "" &&
@@ -98,5 +142,7 @@ class FireHelper {
                 }
             }
         }
+
+
     }
 }

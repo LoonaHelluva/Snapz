@@ -42,6 +42,7 @@ class SearchAdapter(view: View, users: ArrayList<UserModel>) : RecyclerView.Adap
             val intent = Intent(holder.itemView.context, Chat::class.java)
             intent.putExtra("userId", users[position].id)
             intent.putExtra("userName", users[position].name)
+            intent.putExtra("userImage", users[position].profileImage)
             holder.itemView.context.startActivity(intent)
         }
     }

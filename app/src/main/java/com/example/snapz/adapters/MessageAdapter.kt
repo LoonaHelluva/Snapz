@@ -12,7 +12,7 @@ import com.example.snapz.Classes.FireHelper
 import com.example.snapz.Classes.MessageModel
 import com.example.snapz.R
 
-class MessageAdapter(view: View, messages: ArrayList<MessageModel>) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(messages: ArrayList<MessageModel>) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     val messages = messages
 
@@ -49,6 +49,7 @@ class MessageAdapter(view: View, messages: ArrayList<MessageModel>) : RecyclerVi
             if(type == "Text"){
                 holder.imageSent.visibility = View.GONE
 
+                holder.messageSent.visibility = View.VISIBLE 
                 holder.messageSent.text = message
             }
             else{

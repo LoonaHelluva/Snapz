@@ -1,13 +1,11 @@
 package com.example.snapz.fragments
 
 import android.os.Bundle
-import android.provider.Settings.Global
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -15,10 +13,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.bumptech.glide.Glide
 import com.example.snapz.Classes.FireHelper
-import com.example.snapz.Classes.User
+import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import com.example.snapz.adapters.SearchAdapter
 
@@ -45,7 +42,7 @@ class SearchFragment : Fragment() {
     lateinit var search: EditText
 
     //List of users
-    val users: ArrayList<User> = arrayListOf()
+    val users: ArrayList<UserModel> = arrayListOf()
 
     //Adapter
     lateinit var adapter: SearchAdapter
@@ -78,7 +75,7 @@ class SearchFragment : Fragment() {
     fun setMe(view:View){
         FireHelper.Users.child(FireHelper.user!!.uid).get().addOnCompleteListener {
             if(it.isSuccessful){
-                val me = it.result.getValue(User::class.java)
+                val me = it.result.getValue(UserModel::class.java)
 
                 if(me != null){
                     Glide.with(view.context).load(me.profileImage).into(userImage)
@@ -95,7 +92,7 @@ class SearchFragment : Fragment() {
         FireHelper.Users.get().addOnCompleteListener {
             if(it.isSuccessful){
                 for(i in it.result.children){
-                    val user = i.getValue(User::class.java)
+                    val user = i.getValue(UserModel::class.java)
 
                     if(user != null && user.id != FireHelper.user!!.uid && user.name.contains(name)){
                         users.add(user)

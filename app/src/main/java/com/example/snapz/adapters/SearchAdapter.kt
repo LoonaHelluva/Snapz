@@ -1,8 +1,6 @@
 package com.example.snapz.adapters
 
 import android.content.Intent
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.snapz.Chat
-import com.example.snapz.Classes.User
+import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 
-class SearchAdapter(view: View, users: ArrayList<User>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>(){
+class SearchAdapter(view: View, users: ArrayList<UserModel>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>(){
 
     val users = users
 

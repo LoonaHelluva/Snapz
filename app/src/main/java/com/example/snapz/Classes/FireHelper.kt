@@ -2,7 +2,6 @@ package com.example.snapz.Classes
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -23,7 +22,7 @@ class FireHelper {
 
                 auth.createUserWithEmailAndPassword(email.trim(), password.trim()).addOnCompleteListener{
                     if(it.isSuccessful){
-                        val user = User(
+                        val user = UserModel(
                             id = auth.uid!!,
                             name = name.trim(),
                             email = email.trim(),

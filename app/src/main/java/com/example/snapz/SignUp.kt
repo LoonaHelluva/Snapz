@@ -1,12 +1,7 @@
 package com.example.snapz
 
 import android.content.Intent
-import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
 import android.os.Bundle
-import android.renderscript.ScriptGroup.Binding
-import android.util.Log
-import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -15,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.snapz.Classes.FireHelper
-import com.example.snapz.Classes.User
-import com.example.snapz.databinding.ActivityMainBinding
 
 class SignUp : AppCompatActivity() {
 

@@ -1,6 +1,6 @@
 package com.example.snapz.Classes
 
-data class User(
+data class UserModel(
     val id: String,
     val name: String,
     val email: String,

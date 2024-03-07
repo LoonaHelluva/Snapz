@@ -3,9 +3,11 @@ package com.example.snapz
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
+import android.view.View
 import android.widget.Adapter
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -19,9 +21,11 @@ import com.example.snapz.Classes.FireHelper
 import com.example.snapz.Classes.MessageModel
 import com.example.snapz.Classes.UserModel
 import com.example.snapz.adapters.MessageAdapter
+import com.example.snapz.adapters.OnLongCLickListener
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import java.text.FieldPosition
 
 class Chat : AppCompatActivity() {
 
@@ -50,6 +54,10 @@ class Chat : AppCompatActivity() {
     lateinit var chatId: String
     val messages = arrayListOf<MessageModel>()
 
+    //Context menu
+    lateinit var popImageMenu: PopupMenu
+    lateinit var popMessageMenu: PopupMenu
+
     companion object{
         var exist = false
     }
@@ -77,7 +85,17 @@ class Chat : AppCompatActivity() {
         etMessageEdit = findViewById(R.id.etEditMessage)
         ibEditDone = findViewById(R.id.ibEditDone)
 
-        adapter = MessageAdapter(messages)
+
+        adapter = MessageAdapter(messages, object : OnLongCLickListener{
+            override fun onLongClickMessageLIstener(position: Int, view: View) {
+                messageLongListener(position, view)
+            }
+
+            override fun onLognClickImageListener(position: Int, view: View) {
+                imageLongListener(position, view)
+            }
+
+        })
 
         rvMessages.layoutManager = LinearLayoutManager(this)
         rvMessages.adapter = adapter
@@ -150,12 +168,91 @@ class Chat : AppCompatActivity() {
         })
     }
 
+    fun imageLongListener(position: Int, view: View) {
+        popImageMenu = PopupMenu(this, view)
+
+        popImageMenu.menuInflater.inflate(R.menu.iamge_long_menu, popImageMenu.menu)
+
+        popImageMenu.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.imageDelete ->{
+                    FireHelper.deleteImage(messages[position], chatId)
+                    true
+                }
+                else -> {
+                    true
+                }
+            }
+        }
+
+        popImageMenu.show()
+    }
+
+    fun messageLongListener(position: Int, view: View){
+        popMessageMenu = PopupMenu(this, view)
+        popMessageMenu.menuInflater.inflate(R.menu.message_long_menu, popMessageMenu.menu)
+
+        popMessageMenu.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.Edit ->{
+
+                    messageLay.visibility = View.GONE
+
+                    messageEditLay.visibility = View.VISIBLE
+
+                    ibEditDone.setOnClickListener {
+                        val message = etMessageEdit.text.toString().trim()
+                        if(message != ""){
+                            if(message != messages[position].text){
+                                FireHelper.editMessage(messages[position], chatId, message)
+                            }
+                        }
+                        else{
+                            Toast.makeText(this, "Field can't be empty", Toast.LENGTH_SHORT).show()
+                        }
+
+                        messageEditLay.visibility = View.GONE
+
+                        messageLay.visibility = View.VISIBLE
+                    }
+
+
+                    true
+                }
+                R.id.messageDelete ->{
+                    FireHelper.deleteMessage(messages[position], chatId)
+                    true
+                }
+                else ->{
+                    true
+                }
+            }
+        }
+
+        popMessageMenu.show()
+    }
+
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(data?.data != null){
             FireHelper.uploadFileToStorage(this, data.data!!, chatId, me.id)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        popImageMenu.dismiss()
+        popMessageMenu.dismiss()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        popImageMenu.dismiss()
+        popMessageMenu.dismiss()
     }
 
     fun getFile(){

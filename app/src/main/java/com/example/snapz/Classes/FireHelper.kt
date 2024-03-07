@@ -21,6 +21,30 @@ class FireHelper {
         val Storage = FirebaseStorage.getInstance().getReference()
 
 
+        fun deleteMessage(message: MessageModel, chatId: String){
+            val messageRef = Chats.child(chatId).child("Messages").child(message.id)
+
+            messageRef.removeValue()
+        }
+
+        fun editMessage(message: MessageModel, chatId: String, newMessage: String){
+            val messageRef = Chats.child(chatId).child("Messages").child(message.id)
+
+            messageRef.child("text").setValue(newMessage)
+        }
+
+        fun deleteImage(image: MessageModel, chatId: String){
+            val realtime = Chats.child(chatId).child("Messages").child(image.id)
+            realtime.removeValue()
+
+            val storage = FirebaseStorage.getInstance().getReferenceFromUrl(image.link)
+            storage.delete().addOnCompleteListener {
+                if(it.isSuccessful){
+                    Log.d("Image", "Deleted successfuly")
+                }
+            }
+        }
+
         fun uploadFileToStorage(context: Context, uri: Uri, chatId: String, sender: String){
             val imageRef = Storage.child(fileName(context, uri))
 

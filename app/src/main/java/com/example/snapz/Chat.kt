@@ -1,5 +1,6 @@
 package com.example.snapz
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
@@ -150,11 +151,11 @@ class Chat : AppCompatActivity() {
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
+                refreshMessages()
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-
+                refreshMessages()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -168,69 +169,7 @@ class Chat : AppCompatActivity() {
         })
     }
 
-    fun imageLongListener(position: Int, view: View) {
-        popImageMenu = PopupMenu(this, view)
 
-        popImageMenu.menuInflater.inflate(R.menu.iamge_long_menu, popImageMenu.menu)
-
-        popImageMenu.setOnMenuItemClickListener {
-            when(it.itemId){
-                R.id.imageDelete ->{
-                    FireHelper.deleteImage(messages[position], chatId)
-                    true
-                }
-                else -> {
-                    true
-                }
-            }
-        }
-
-        popImageMenu.show()
-    }
-
-    fun messageLongListener(position: Int, view: View){
-        popMessageMenu = PopupMenu(this, view)
-        popMessageMenu.menuInflater.inflate(R.menu.message_long_menu, popMessageMenu.menu)
-
-        popMessageMenu.setOnMenuItemClickListener {
-            when(it.itemId){
-                R.id.Edit ->{
-
-                    messageLay.visibility = View.GONE
-
-                    messageEditLay.visibility = View.VISIBLE
-
-                    ibEditDone.setOnClickListener {
-                        val message = etMessageEdit.text.toString().trim()
-                        if(message != ""){
-                            if(message != messages[position].text){
-                                FireHelper.editMessage(messages[position], chatId, message)
-                            }
-                        }
-                        else{
-                            Toast.makeText(this, "Field can't be empty", Toast.LENGTH_SHORT).show()
-                        }
-
-                        messageEditLay.visibility = View.GONE
-
-                        messageLay.visibility = View.VISIBLE
-                    }
-
-
-                    true
-                }
-                R.id.messageDelete ->{
-                    FireHelper.deleteMessage(messages[position], chatId)
-                    true
-                }
-                else ->{
-                    true
-                }
-            }
-        }
-
-        popMessageMenu.show()
-    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -277,4 +216,90 @@ class Chat : AppCompatActivity() {
             }
         }
     }
+
+    fun imageLongListener(position: Int, view: View) {
+        val popImageMenu = PopupMenu(this, view)
+
+        popImageMenu.menuInflater.inflate(R.menu.iamge_long_menu, popImageMenu.menu)
+
+        popImageMenu.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.imageDelete ->{
+                    FireHelper.deleteImage(messages[position], chatId)
+                    true
+                }
+                else -> {
+                    true
+                }
+            }
+        }
+
+        popImageMenu.show()
+    }
+
+    fun messageLongListener(position: Int, view: View){
+        val popMessageMenu = PopupMenu(this, view)
+        popMessageMenu.menuInflater.inflate(R.menu.message_long_menu, popMessageMenu.menu)
+
+        popMessageMenu.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.Edit ->{
+
+                    messageLay.visibility = View.GONE
+
+                    messageEditLay.visibility = View.VISIBLE
+
+                    etMessageEdit.setText(messages[position].text)
+
+                    ibEditDone.setOnClickListener {
+                        val message = etMessageEdit.text.toString().trim()
+                        if(message != ""){
+                            if(message != messages[position].text){
+                                FireHelper.editMessage(messages[position], chatId, message)
+                            }
+                        }
+                        else{
+                            Toast.makeText(this, "Field can't be empty", Toast.LENGTH_SHORT).show()
+                        }
+
+                        messageEditLay.visibility = View.GONE
+
+                        messageLay.visibility = View.VISIBLE
+
+                        adapter.notifyItemChanged(position)
+                    }
+
+
+                    true
+                }
+                R.id.messageDelete ->{
+                    FireHelper.deleteMessage(messages[position], chatId)
+                    adapter.notifyItemRemoved(position)
+                    true
+                }
+                else ->{
+                    true
+                }
+            }
+        }
+
+        popMessageMenu.show()
+    }
+
+    fun refreshMessages(){
+        messages.clear()
+        FireHelper.Chats.child(chatId).child("Messages").get().addOnCompleteListener {
+            if(it.isSuccessful){
+                for(i in it.result.children){
+                    val message = i.getValue(MessageModel::class.java)
+
+                    if(message != null){
+                        messages.add(message)
+                    }
+                }
+                rvMessages.adapter = adapter
+            }
+        }
+    }
+
 }

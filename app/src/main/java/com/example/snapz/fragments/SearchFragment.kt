@@ -85,6 +85,8 @@ class SearchFragment : Fragment() {
             else{
                 Log.e("Search", it.exception.toString())
             }
+        }.addOnFailureListener {
+            Log.e("Search", it.message.toString())
         }
     }
 

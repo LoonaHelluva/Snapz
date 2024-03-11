@@ -108,9 +108,9 @@ class Chat : AppCompatActivity() {
         chatWithImage = intent.getStringExtra("userImage").toString()
 
         chatId = if(FireHelper.user!!.uid.hashCode() < chatWithId.hashCode()){
-            FireHelper.user.uid + chatWithId
+            FireHelper.user!!.uid + chatWithId
         } else{
-            chatWithId + FireHelper.user.uid
+            chatWithId + FireHelper.user!!.uid
         }
 
         chatName.text = chatWithName
@@ -187,13 +187,6 @@ class Chat : AppCompatActivity() {
         popMessageMenu.dismiss()
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        popImageMenu.dismiss()
-        popMessageMenu.dismiss()
-    }
-
     fun getFile(){
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
@@ -206,7 +199,7 @@ class Chat : AppCompatActivity() {
             if(it.isSuccessful){
                 val user = it.result.getValue(UserModel::class.java)
 
-                if(user != null && user.id == FireHelper.user.uid){
+                if(user != null && user.id == FireHelper.user!!.uid){
                     me = user
 
                     FireHelper.isChatExist(chatId)

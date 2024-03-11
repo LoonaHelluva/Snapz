@@ -2,10 +2,13 @@ package com.example.snapz.Classes
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
+import androidx.core.content.ContextCompat.startActivity
 import com.example.snapz.Chat
+import com.example.snapz.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -14,7 +17,7 @@ import org.w3c.dom.Text
 class FireHelper {
     companion object {
         val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
+        var user = auth.currentUser
 
         val Chats = FirebaseDatabase.getInstance().getReference("Chats")
         val Users = FirebaseDatabase.getInstance().getReference("Users")
@@ -103,6 +106,9 @@ class FireHelper {
                             Users.child(user.id).setValue(user).addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     Log.i("Realtime", "New user added successfully")
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    startActivity(context, intent, null)
+                                    FireHelper.user = FirebaseAuth.getInstance().currentUser
                                 }
                             }
                         } else {

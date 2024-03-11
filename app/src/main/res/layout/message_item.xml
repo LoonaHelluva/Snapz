@@ -59,6 +59,8 @@
                     android:layout_height="match_parent"
                     android:maxWidth="350dp"
                     android:maxHeight="300dp"
+                    android:minWidth="200dp"
+                    android:minHeight="200dp"
                     tools:srcCompat="@tools:sample/avatars" />
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>

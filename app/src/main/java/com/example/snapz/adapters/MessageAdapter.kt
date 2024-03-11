@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.snapz.Classes.FireHelper
 import com.example.snapz.Classes.MessageModel
 import com.example.snapz.R
@@ -76,7 +77,7 @@ class MessageAdapter(messages: ArrayList<MessageModel>, val onLongListener: OnLo
             } else {
                 holder.messageSent.visibility = View.GONE
 
-                Glide.with(holder.itemView.context).load(link).fitCenter().into(holder.imageSent)
+                Glide.with(holder.itemView.context).load(link).optionalFitCenter().into(holder.imageSent)
             }
         } else {
             holder.sent.visibility = View.GONE

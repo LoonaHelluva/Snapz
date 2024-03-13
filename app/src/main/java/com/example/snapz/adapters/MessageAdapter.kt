@@ -77,7 +77,7 @@ class MessageAdapter(messages: ArrayList<MessageModel>, val onLongListener: OnLo
             } else {
                 holder.messageSent.visibility = View.GONE
 
-                Glide.with(holder.itemView.context).load(link).optionalFitCenter().into(holder.imageSent)
+                Glide.with(holder.itemView.context).load(link).into(holder.imageSent)
             }
         } else {
             holder.sent.visibility = View.GONE

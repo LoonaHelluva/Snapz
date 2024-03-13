@@ -132,7 +132,7 @@ class Chat : AppCompatActivity() {
                 }
             }
             else{
-                FireHelper.createNewChat(chatId, me.name+chatWithName, chatWithImage+me.profileImage)
+                FireHelper.createNewChat(chatId, "${me.name}+${chatWithName}", chatWithImage+me.profileImage)
             }
         }
 

@@ -9,10 +9,10 @@ import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat.startActivity
 import com.example.snapz.Chat
 import com.example.snapz.MainActivity
+import com.example.snapz.fragments.SettingsFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import org.w3c.dom.Text
 
 class FireHelper {
     companion object {
@@ -48,7 +48,7 @@ class FireHelper {
             }
         }
 
-        fun uploadFileToStorage(context: Context, uri: Uri, chatId: String, sender: String){
+        fun uploadFileToStorage(context: Context, uri: Uri, chatId: String = "", sender: String = ""){
             val imageRef = Storage.child(fileName(context, uri))
 
             val uploadTask = imageRef.putFile(uri).continueWithTask { task ->

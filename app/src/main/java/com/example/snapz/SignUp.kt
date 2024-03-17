@@ -1,6 +1,8 @@
 package com.example.snapz
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -70,11 +72,30 @@ class SignUp : AppCompatActivity() {
     }
 
     fun checkUser(){
-        if(FireHelper.user != null){
-            val intent = Intent(this, MainActivity::class.java)
-
+        if(!checkInternet()){
+            val intent: Intent = Intent(this, noInternet::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
         }
+        else{
+            if(FireHelper.user != null){
+                val intent = Intent(this, MainActivity::class.java)
+
+                startActivity(intent)
+            }
+        }
+
+    }
+
+    fun checkInternet() : Boolean{
+        val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+
+        if(networkInfo == null || !networkInfo.isConnected){
+            return false
+        }
+
+        return true
     }
 
 }

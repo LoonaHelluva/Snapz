@@ -1,10 +1,10 @@
 package com.example.snapz.Classes
 
 data class UserModel(
-    val id: String,
-    val name: String,
+    var id: String,
+    var name: String,
     val email: String,
-    val profileImage: String
+    var profileImage: String
 ){
     constructor() : this("", "", "", "")
 }

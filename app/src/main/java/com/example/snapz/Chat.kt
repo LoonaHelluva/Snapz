@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
+import android.util.Log
 import android.view.View
 import android.widget.Adapter
 import android.widget.EditText
@@ -49,11 +50,11 @@ class Chat : AppCompatActivity() {
     lateinit var chatWithId: String
     lateinit var chatWithName: String
     lateinit var chatWithImage: String
-    lateinit var me: UserModel
+    var me = UserModel()
 
     //Chat
     lateinit var chatId: String
-    val messages = arrayListOf<MessageModel>()
+    var messages = mutableListOf<MessageModel>()
 
     //Context menu
     lateinit var popImageMenu: PopupMenu
@@ -76,7 +77,6 @@ class Chat : AppCompatActivity() {
         //Initializing views
         chatName = findViewById(R.id.tvChatName)
         rvMessages = findViewById(R.id.rvMessages)
-
         messageLay = findViewById(R.id.messageSendLay)
         chooseFile = findViewById(R.id.ibChooseFile)
         etMessage = findViewById(R.id.etMessage)
@@ -86,6 +86,62 @@ class Chat : AppCompatActivity() {
         etMessageEdit = findViewById(R.id.etEditMessage)
         ibEditDone = findViewById(R.id.ibEditDone)
 
+        me.id = FireHelper.user!!.uid
+
+        //Getting users
+        if(intent.getStringExtra("chatId") != null){
+            Log.d("CHATTTT", "GOT INTO CHAT FORM THE CHATS PAGE")
+            chatId = intent.getStringExtra("chatId").toString()
+
+            FireHelper.isChatExist(chatId)
+
+            me.name = intent.getStringExtra("meName").toString()
+            me.id = intent.getStringExtra("meId").toString()
+            me.profileImage = intent.getStringExtra("meImage").toString()
+
+            chatWithId = intent.getStringExtra("chatId").toString()
+            chatWithName = intent.getStringExtra("chatName").toString()
+            chatWithImage = intent.getStringExtra("userImage").toString()
+
+            chatWithId = chatWithId.replace(me.id, "")
+            chatWithName = if(chatWithName.contains("${me.name}+")){
+                chatWithName.replace("${me.name}+", "").toString()
+            }
+            else{
+                chatWithName.replace("+${me.name}", "")
+            }
+
+            chatWithImage.replace(me.profileImage, "")
+
+            chatId = if(FireHelper.user!!.uid.hashCode() < chatWithId.hashCode()){
+                FireHelper.user!!.uid + chatWithId
+            } else{
+                chatWithId + FireHelper.user!!.uid
+            }
+
+            chatName.text = chatWithName
+        }
+        else{
+
+            Log.d("CHATTTT", "GOT INTO CHAT FORM THE SEARCH PAGE")
+            chatWithId = intent.getStringExtra("userId").toString()
+            chatWithName = intent.getStringExtra("userName").toString()
+            chatWithImage = intent.getStringExtra("userImage").toString()
+
+            chatName.setText(chatWithName)
+
+            chatId = if(me.id.hashCode() < chatWithId.hashCode()){
+                me.id + chatWithId
+            }
+            else{
+                chatWithId + me.id
+            }
+
+            FireHelper.isChatExist(chatId)
+
+            //Getting me
+            getMe()
+        }
 
         adapter = MessageAdapter(messages, object : OnLongCLickListener{
             override fun onLongClickMessageLIstener(position: Int, view: View) {
@@ -101,24 +157,6 @@ class Chat : AppCompatActivity() {
         rvMessages.layoutManager = LinearLayoutManager(this)
         rvMessages.adapter = adapter
 
-        //Users
-        val intent = intent
-        chatWithId = intent.getStringExtra("userId").toString()
-        chatWithName = intent.getStringExtra("userName").toString()
-        chatWithImage = intent.getStringExtra("userImage").toString()
-
-        chatId = if(FireHelper.user!!.uid.hashCode() < chatWithId.hashCode()){
-            FireHelper.user!!.uid + chatWithId
-        } else{
-            chatWithId + FireHelper.user!!.uid
-        }
-
-        chatName.text = chatWithName
-
-
-
-        //Getting me
-        getMe()
 
         //On Click listeners
 
@@ -169,8 +207,6 @@ class Chat : AppCompatActivity() {
         })
     }
 
-
-
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -178,13 +214,6 @@ class Chat : AppCompatActivity() {
         if(data?.data != null){
             FireHelper.uploadFileToStorage(this, data.data!!, chatId, me.id)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        popImageMenu.dismiss()
-        popMessageMenu.dismiss()
     }
 
     fun getFile(){
@@ -201,8 +230,6 @@ class Chat : AppCompatActivity() {
 
                 if(user != null && user.id == FireHelper.user!!.uid){
                     me = user
-
-                    FireHelper.isChatExist(chatId)
 
                     return@addOnCompleteListener
                 }
@@ -290,9 +317,36 @@ class Chat : AppCompatActivity() {
                         messages.add(message)
                     }
                 }
+                adapter = MessageAdapter(messages, object : OnLongCLickListener{
+                    override fun onLongClickMessageLIstener(position: Int, view: View) {
+                        messageLongListener(position, view)
+                    }
+
+                    override fun onLognClickImageListener(position: Int, view: View) {
+                        imageLongListener(position, view)
+                    }
+
+                })
                 rvMessages.adapter = adapter
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        messages.clear()
+
+        adapter = MessageAdapter(messages, object : OnLongCLickListener{
+            override fun onLongClickMessageLIstener(position: Int, view: View) {
+                messageLongListener(position, view)
+            }
+
+            override fun onLognClickImageListener(position: Int, view: View) {
+                imageLongListener(position, view)
+            }
+
+        })
     }
 
 }

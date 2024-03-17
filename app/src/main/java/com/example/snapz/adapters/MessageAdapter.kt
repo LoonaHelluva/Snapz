@@ -22,7 +22,7 @@ interface OnLongCLickListener{
     fun onLognClickImageListener(position: Int, view: View)
 }
 
-class MessageAdapter(messages: ArrayList<MessageModel>, val onLongListener: OnLongCLickListener) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(messages: MutableList<MessageModel>, val onLongListener: OnLongCLickListener) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     val messages = messages
 

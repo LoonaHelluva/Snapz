@@ -143,6 +143,7 @@ class FireHelper {
 
                         if (chat != null && chat.id == id) {
                             Chat.exist = true
+                            Log.d("CHAT EXIST" ,"CHAT EXISTTTTTT")
                             return@addOnCompleteListener
                         }
                     }
@@ -173,6 +174,38 @@ class FireHelper {
             }
         }
 
+        fun isMyNameExist(name: String, me : UserModel) : Boolean{
+            val names = mutableListOf<String>()
+            var curName: String = ""
+
+            //Separating the names and + symbols
+            for(i in name.indices){
+                if(name[i] != '+'){
+                    Log.i("I", name[i].toString())
+                    curName += name[i]
+                }
+                else{
+                    names.add("+")
+                    names.add(curName)
+                    Log.i("CURNAME", curName)
+                    curName = ""
+                }
+                if((i + 1) == name.length){
+                    Log.i("CURNAME", curName)
+                    names.add(curName)
+                }
+            }
+
+            //Looking for my name in chat name and changing it to my new name
+            for (i in names){
+                Log.i("NAMEIIIIII", i)
+                if(i == me.name){
+                    return  true
+                }
+            }
+
+            return false
+        }
 
     }
 }

@@ -74,7 +74,6 @@ class SignUp : AppCompatActivity() {
     fun checkUser(){
         if(!checkInternet()){
             val intent: Intent = Intent(this, noInternet::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
         }
         else{

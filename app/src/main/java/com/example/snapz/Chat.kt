@@ -35,12 +35,10 @@ class Chat : AppCompatActivity() {
     lateinit var chatName: TextView
     lateinit var rvMessages: RecyclerView
 
-    lateinit var messageLay: ConstraintLayout
     lateinit var chooseFile: ImageButton
     lateinit var etMessage: EditText
     lateinit var ibSendMessage: ImageButton
 
-    lateinit var messageEditLay: ConstraintLayout
     lateinit var etMessageEdit: EditText
     lateinit var ibEditDone: ImageButton
 
@@ -50,15 +48,13 @@ class Chat : AppCompatActivity() {
     lateinit var chatWithId: String
     lateinit var chatWithName: String
     lateinit var chatWithImage: String
+
     var me = UserModel()
 
     //Chat
     lateinit var chatId: String
-    var messages = mutableListOf<MessageModel>()
 
-    //Context menu
-    lateinit var popImageMenu: PopupMenu
-    lateinit var popMessageMenu: PopupMenu
+    var messages = mutableListOf<MessageModel>()
 
     companion object{
         var exist = false
@@ -77,12 +73,11 @@ class Chat : AppCompatActivity() {
         //Initializing views
         chatName = findViewById(R.id.tvChatName)
         rvMessages = findViewById(R.id.rvMessages)
-        messageLay = findViewById(R.id.messageSendLay)
+
         chooseFile = findViewById(R.id.ibChooseFile)
         etMessage = findViewById(R.id.etMessage)
         ibSendMessage = findViewById(R.id.ibSendMessage)
 
-        messageEditLay = findViewById(R.id.messageEditLay)
         etMessageEdit = findViewById(R.id.etEditMessage)
         ibEditDone = findViewById(R.id.ibEditDone)
 
@@ -265,9 +260,9 @@ class Chat : AppCompatActivity() {
             when(it.itemId){
                 R.id.Edit ->{
 
-                    messageLay.visibility = View.GONE
+                    hideSendLay()
 
-                    messageEditLay.visibility = View.VISIBLE
+                    showEditLay()
 
                     etMessageEdit.setText(messages[position].text)
 
@@ -282,9 +277,9 @@ class Chat : AppCompatActivity() {
                             Toast.makeText(this, "Field can't be empty", Toast.LENGTH_SHORT).show()
                         }
 
-                        messageEditLay.visibility = View.GONE
+                        hideEditLay()
 
-                        messageLay.visibility = View.VISIBLE
+                        showSendLay()
 
                         adapter.notifyItemChanged(position)
                     }
@@ -304,6 +299,28 @@ class Chat : AppCompatActivity() {
         }
 
         popMessageMenu.show()
+    }
+
+    private fun hideSendLay(){
+        chooseFile.visibility = View.GONE
+        etMessage.visibility = View.GONE
+        ibSendMessage.visibility = View.GONE
+    }
+
+    private fun showSendLay(){
+        chooseFile.visibility = View.VISIBLE
+        etMessage.visibility = View.VISIBLE
+        ibSendMessage.visibility = View.VISIBLE
+    }
+
+    private fun hideEditLay(){
+        etMessageEdit.visibility = View.GONE
+        ibEditDone.visibility = View.GONE
+    }
+
+    private fun showEditLay(){
+        etMessageEdit.visibility = View.VISIBLE
+        ibEditDone.visibility = View.VISIBLE
     }
 
     fun refreshMessages(){

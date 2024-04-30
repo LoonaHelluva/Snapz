@@ -2,11 +2,13 @@ package com.example.snapz.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager.OnActivityDestroyListener
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
@@ -16,6 +18,7 @@ import com.example.snapz.Classes.FireHelper
 import com.example.snapz.Classes.MessageModel
 import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
+import com.google.firebase.Firebase
 
 class SettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +38,7 @@ class SettingsFragment : Fragment() {
     lateinit var profImage: ImageButton
     lateinit var userName: EditText
     lateinit var done_button: ImageButton
+    lateinit var log_out_btn: Button
 
     //User
     lateinit var me: UserModel
@@ -45,7 +49,7 @@ class SettingsFragment : Fragment() {
         profImage = view.findViewById(R.id.ibUserImage)
         userName = view.findViewById(R.id.settingsUserName)
         done_button = view.findViewById(R.id.done_button)
-
+        log_out_btn = view.findViewById(R.id.btLogOut)
 
         setThePage() //Setting the page
 
@@ -62,6 +66,10 @@ class SettingsFragment : Fragment() {
             else{
                 Toast.makeText(requireContext(), "New name can't be empty or equal to old name", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        log_out_btn.setOnClickListener {
+            FireHelper.auth.signOut()
         }
     }
 
@@ -202,18 +210,15 @@ class SettingsFragment : Fragment() {
             else{
                 names.add("+")
                 names.add(curName)
-                Log.i("CURNAME", curName)
                 curName = ""
             }
             if((i + 1) == name.length){
-                Log.i("CURNAME", curName)
                 names.add(curName)
             }
         }
 
         //Looking for my name in chat name and changing it to my new name
         for (i in names){
-            Log.i("NAMEIIIIII", i)
             if(i == me.name){
                 return  true
             }

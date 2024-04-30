@@ -1,6 +1,7 @@
 package com.example.snapz.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,9 @@ import com.example.snapz.Classes.FireHelper
 import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import com.example.snapz.adapters.ChatsAdapter
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 
 class ChatsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +56,59 @@ class ChatsFragment : Fragment() {
         chatsRv.adapter = adapter
 
         getMe()
+
+        FireHelper.Chats.addChildEventListener(object: ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?){
+                val chat = snapshot.getValue(ChatModel::class.java)
+
+                if(chat != null && isMyNameExist(chat.name)){
+                    chat.name = if(chat.name.contains("${me.name}+")){chat.name.replace("${me.name}+", "")}
+                                else{chat.name.replace("+${me.name}", "")}
+                    chats.add(chat)
+
+                    adapter.notifyDataSetChanged()
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                loadChats()
+            }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
+    fun isMyNameExist(name: String) : Boolean{
+        val names = mutableListOf<String>()
+        var curName: String = ""
+
+        //Separating the names and + symbols
+        for(i in name.indices){
+            if(name[i] != '+'){
+                curName += name[i]
+            }
+            else{
+                names.add("+")
+                names.add(curName)
+                curName = ""
+            }
+            if((i + 1) == name.length){
+                names.add(curName)
+            }
+        }
+
+        //Looking for my name in chat name and changing it to my new name
+        for (i in names){
+            if(i == me.name){
+                return  true
+            }
+        }
+
+        return false
     }
 
     fun loadChats(){
@@ -71,8 +128,7 @@ class ChatsFragment : Fragment() {
                         chats.add(chat)
                     }
                 }
-                adapter = ChatsAdapter(chats, me)
-                chatsRv.adapter = adapter
+                adapter.notifyDataSetChanged()
             }
         }
     }

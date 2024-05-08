@@ -23,6 +23,7 @@ class FireHelper {
         val Users = FirebaseDatabase.getInstance().getReference("Users")
         val Storage = FirebaseStorage.getInstance().getReference()
 
+        var me = UserModel()
 
         fun deleteMessage(message: MessageModel, chatId: String){
             val messageRef = Chats.child(chatId).child("Messages").child(message.id)

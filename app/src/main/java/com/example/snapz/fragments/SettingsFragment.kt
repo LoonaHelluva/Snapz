@@ -19,6 +19,7 @@ import com.example.snapz.Classes.MessageModel
 import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import com.google.firebase.Firebase
+import com.example.snapz.Classes.FireHelper.Companion.me
 
 class SettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +40,6 @@ class SettingsFragment : Fragment() {
     lateinit var userName: EditText
     lateinit var done_button: ImageButton
     lateinit var log_out_btn: Button
-
-    //User
-    lateinit var me: UserModel
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -75,22 +73,33 @@ class SettingsFragment : Fragment() {
 
     fun setThePage(){ //This function is searching me as user in realtime database and setting my data to views
 
-        //Initializing realtime refference
-        val realtime = FireHelper.Users.child(FireHelper.user!!.uid)
+        if(me.id != ""){
+            userName.setHint(me.name) //Setting my name to hint of the userName view
+            userName.setText("")
 
-        realtime.get().addOnCompleteListener { //Getting the user
-            if(it.isSuccessful){
-                val user = it.result.getValue(UserModel::class.java) //Converting to class UserModel
+            Glide.with(this).load(me.profileImage).into(profImage) //Setting my profile image into profileImage view using Glide
+        }
 
-                if(user != null && user.id == FireHelper.user!!.uid){ //Checking if this user is me
-                    me = user //Setting me as this user
+        else {
+            //Initializing realtime refference
+            val realtime = FireHelper.Users.child(FireHelper.user!!.uid)
 
-                    userName.setHint(me.name) //Setting my name to hint of the userName view
-                    userName.setText("")
+            realtime.get().addOnCompleteListener { //Getting the user
+                if (it.isSuccessful) {
+                    val user =
+                        it.result.getValue(UserModel::class.java) //Converting to class UserModel
 
-                    Glide.with(this).load(me.profileImage).into(profImage) //Setting my profile image into profileImage view using Glide
+                    if (user != null && user.id == FireHelper.user!!.uid) { //Checking if this user is me
+                        me = user //Setting me as this user
 
-                    Log.d("SettingsUser", "image: ${me.profileImage}")
+                        userName.setHint(me.name) //Setting my name to hint of the userName view
+                        userName.setText("")
+
+                        Glide.with(this).load(me.profileImage)
+                            .into(profImage) //Setting my profile image into profileImage view using Glide
+
+                        Log.d("SettingsUser", "image: ${me.profileImage}")
+                    }
                 }
             }
         }

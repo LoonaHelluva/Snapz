@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.snapz.Classes.ChatModel
-import com.example.snapz.Classes.FireHelper
+import com.example.snapz.Classes.FireHelper as fireHelper
 import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import com.example.snapz.adapters.ChatsAdapter
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.example.snapz.Classes.FireHelper.Companion.me
 
 class ChatsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,12 +40,16 @@ class ChatsFragment : Fragment() {
     lateinit var userImage: ImageView
     lateinit var chatsRv : RecyclerView
 
-    //ChatList
-    var chats: MutableList<ChatModel> = mutableListOf()
-    lateinit var adapter: ChatsAdapter
+    companion object{
+        //ChatList
+        var chats: MutableList<ChatModel> = mutableListOf()
+        lateinit var adapter: ChatsAdapter
 
-    //Me
-    var me = UserModel()
+
+        //Variable to know if data is loaded
+        var isLoaded = true
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -55,9 +60,17 @@ class ChatsFragment : Fragment() {
         adapter = ChatsAdapter(chats, me)
         chatsRv.adapter = adapter
 
-        getMe()
+        if(!isLoaded) {
+            getMe()
+        }
+        else{
+            userName.text = me.name
 
-        FireHelper.Chats.addChildEventListener(object: ChildEventListener{
+            Glide.with(requireContext()).load(me.profileImage).into(userImage)
+        }
+
+
+        fireHelper.Chats.addChildEventListener(object: ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?){
                 val chat = snapshot.getValue(ChatModel::class.java)
 
@@ -112,12 +125,12 @@ class ChatsFragment : Fragment() {
     }
 
     fun loadChats(){
-        FireHelper.Chats.get().addOnCompleteListener {
+        fireHelper.Chats.get().addOnCompleteListener {
             if(it.isSuccessful){
                 for(i in it.result.children){
                     val chat = i.getValue(ChatModel::class.java)
 
-                    if(chat != null && FireHelper.isMyNameExist(chat.name, me)){
+                    if(chat != null && fireHelper.isMyNameExist(chat.name, me)){
                         chat.image = chat.image.replace(me.profileImage, "")
                         chat.name = if(chat.name.contains("${me.name}+")){
                             chat.name.replace("${me.name}+", "").toString()
@@ -134,11 +147,11 @@ class ChatsFragment : Fragment() {
     }
 
     fun getMe(){
-        FireHelper.Users.child(FireHelper.user!!.uid).get().addOnCompleteListener {
+        fireHelper.Users.child(fireHelper.user!!.uid).get().addOnCompleteListener {
             if(it.isSuccessful){
                 val user = it.result.getValue(UserModel::class.java)
 
-                if(user != null && user.id == FireHelper.user!!.uid){
+                if(user != null && user.id == fireHelper.user!!.uid){
                     me = user
                     loadChats()
                     userName.setText(me.name)

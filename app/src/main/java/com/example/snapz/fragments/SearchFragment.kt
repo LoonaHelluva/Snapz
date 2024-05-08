@@ -18,6 +18,7 @@ import com.example.snapz.Classes.FireHelper
 import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import com.example.snapz.adapters.SearchAdapter
+import com.example.snapz.Classes.FireHelper.Companion.me
 
 class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,20 +74,25 @@ class SearchFragment : Fragment() {
     }
 
     fun setMe(view:View){
-        FireHelper.Users.child(FireHelper.user!!.uid).get().addOnCompleteListener {
-            if(it.isSuccessful){
-                val me = it.result.getValue(UserModel::class.java)
+        if(me.id != ""){
+            Glide.with(view.context).load(me.profileImage).into(userImage)
+            userName.text = me.name
+        }
+        else {
+            FireHelper.Users.child(FireHelper.user!!.uid).get().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val me = it.result.getValue(UserModel::class.java)
 
-                if(me != null){
-                    Glide.with(view.context).load(me.profileImage).into(userImage)
-                    userName.text = me.name
+                    if (me != null) {
+                        Glide.with(view.context).load(me.profileImage).into(userImage)
+                        userName.text = me.name
+                    }
+                } else {
+                    Log.e("Search", it.exception.toString())
                 }
+            }.addOnFailureListener {
+                Log.e("Search", it.message.toString())
             }
-            else{
-                Log.e("Search", it.exception.toString())
-            }
-        }.addOnFailureListener {
-            Log.e("Search", it.message.toString())
         }
     }
 

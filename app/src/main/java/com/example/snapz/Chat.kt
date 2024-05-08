@@ -28,6 +28,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import java.text.FieldPosition
+import com.example.snapz.Classes.FireHelper.Companion.me
 
 class Chat : AppCompatActivity() {
 
@@ -48,8 +49,6 @@ class Chat : AppCompatActivity() {
     lateinit var chatWithId: String
     lateinit var chatWithName: String
     lateinit var chatWithImage: String
-
-    var me = UserModel()
 
     //Chat
     lateinit var chatId: String
@@ -90,9 +89,11 @@ class Chat : AppCompatActivity() {
 
             FireHelper.isChatExist(chatId)
 
-            me.name = intent.getStringExtra("meName").toString()
-            me.id = intent.getStringExtra("meId").toString()
-            me.profileImage = intent.getStringExtra("meImage").toString()
+            if(me.id == "") {
+                me.name = intent.getStringExtra("meName").toString()
+                me.id = intent.getStringExtra("meId").toString()
+                me.profileImage = intent.getStringExtra("meImage").toString()
+            }
 
             chatWithId = intent.getStringExtra("chatId").toString()
             chatWithName = intent.getStringExtra("chatName").toString()
@@ -135,7 +136,9 @@ class Chat : AppCompatActivity() {
             FireHelper.isChatExist(chatId)
 
             //Getting me
-            getMe()
+            if(me.id == "") {
+                getMe()
+            }
         }
 
         adapter = MessageAdapter(messages, object : OnLongCLickListener{

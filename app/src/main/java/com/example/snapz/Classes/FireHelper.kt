@@ -110,6 +110,7 @@ class FireHelper {
                                     val intent = Intent(context, MainActivity::class.java)
                                     startActivity(context, intent, null)
                                     FireHelper.user = FirebaseAuth.getInstance().currentUser
+                                    me = user
                                 }
                             }
                         } else {

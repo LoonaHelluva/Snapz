@@ -1,6 +1,8 @@
 package com.example.snapz
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -31,7 +33,42 @@ class Splash : AppCompatActivity() {
             insets
         }
 
-        getMe()
+        if(checkUser()) {
+            getMe()
+        }
+        else{
+            val intent = Intent(this, SignUp::class.java)
+
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun checkUser(): Boolean{
+        if(!checkInternet()){
+            val intent = Intent(this, noInternet::class.java)
+            startActivity(intent)
+            finish()
+            return false
+        }
+        else{
+            if(FireHelper.user != null){
+                getMe()
+                return true
+            }
+            return false
+        }
+    }
+
+    private fun checkInternet() : Boolean{
+        val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+
+        if(networkInfo == null || !networkInfo.isConnected){
+            return false
+        }
+
+        return true
     }
 
     private fun getMe(){

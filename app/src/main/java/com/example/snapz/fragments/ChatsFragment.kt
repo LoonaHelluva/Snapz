@@ -95,6 +95,12 @@ class ChatsFragment : Fragment() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        chats.clear()
+    }
+
     fun isMyNameExist(name: String) : Boolean{
         val names = mutableListOf<String>()
         var curName: String = ""

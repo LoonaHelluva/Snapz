@@ -47,8 +47,10 @@ class Splash : AppCompatActivity() {
     private fun checkUser(): Boolean{
         if(!checkInternet()){
             val intent = Intent(this, noInternet::class.java)
+
             startActivity(intent)
             finish()
+
             return false
         }
         else{

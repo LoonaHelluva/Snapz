@@ -40,6 +40,7 @@ class SettingsFragment : Fragment() {
     lateinit var userName: EditText
     lateinit var done_button: ImageButton
     lateinit var log_out_btn: Button
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -49,7 +50,8 @@ class SettingsFragment : Fragment() {
         done_button = view.findViewById(R.id.done_button)
         log_out_btn = view.findViewById(R.id.btLogOut)
 
-        setThePage() //Setting the page
+        //Setting the page
+        setThePage()
 
         //On click listeners
         profImage.setOnClickListener { //If user clicks on profile image
@@ -71,32 +73,40 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    fun setThePage(){ //This function is searching me as user in realtime database and setting my data to views
+    //This function is searching me as user in realtime database and setting my data to views
+    fun setThePage(){
 
         if(me.id != ""){
-            userName.setHint(me.name) //Setting my name to hint of the userName view
+            //Setting my name to hint of the userName view
+            userName.setHint(me.name)
             userName.setText("")
 
-            Glide.with(this).load(me.profileImage).into(profImage) //Setting my profile image into profileImage view using Glide
+            //Setting my profile image into profileImage view using Glide
+            Glide.with(this).load(me.profileImage).into(profImage)
         }
 
         else {
             //Initializing realtime refference
             val realtime = FireHelper.Users.child(FireHelper.user!!.uid)
 
-            realtime.get().addOnCompleteListener { //Getting the user
+            //Getting the user
+            realtime.get().addOnCompleteListener {
                 if (it.isSuccessful) {
-                    val user =
-                        it.result.getValue(UserModel::class.java) //Converting to class UserModel
 
-                    if (user != null && user.id == FireHelper.user!!.uid) { //Checking if this user is me
-                        me = user //Setting me as this user
+                    //Converting to class UserModel
+                    val user = it.result.getValue(UserModel::class.java)
 
-                        userName.setHint(me.name) //Setting my name to hint of the userName view
+                    //Checking if this user is me
+                    if (user != null && user.id == FireHelper.user!!.uid) {
+                        //Setting me as this user
+                        me = user
+
+                        //Setting my name to hint of the userName view
+                        userName.setHint(me.name)
                         userName.setText("")
 
-                        Glide.with(this).load(me.profileImage)
-                            .into(profImage) //Setting my profile image into profileImage view using Glide
+                        //Setting my profile image into profileImage view using Glide
+                        Glide.with(this).load(me.profileImage).into(profImage)
 
                         Log.d("SettingsUser", "image: ${me.profileImage}")
                     }

@@ -47,20 +47,24 @@ class SearchFragment : Fragment() {
 
     //Adapter
     lateinit var adapter: SearchAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Initialize views
         userImage = view.findViewById(R.id.searchUserImage)
         userName = view.findViewById(R.id.tvUserName)
         rvUsers = view.findViewById(R.id.rvSearch)
         btSearch = view.findViewById(R.id.searchButton)
         search = view.findViewById(R.id.searchName)
 
+        //Recycler view and adapter initialization
         adapter = SearchAdapter(requireView(), users)
         rvUsers.layoutManager = LinearLayoutManager(view.context)
         rvUsers.adapter = adapter
 
-        setMe(view)
+        //Getting user (me)
+        getMe(view)
 
         //OnClick listeners
         btSearch.setOnClickListener {
@@ -73,7 +77,8 @@ class SearchFragment : Fragment() {
         }
     }
 
-    fun setMe(view:View){
+    //Function getting user (me) data
+    fun getMe(view:View){
         if(me.id != ""){
             Glide.with(view.context).load(me.profileImage).into(userImage)
             userName.text = me.name
@@ -85,17 +90,20 @@ class SearchFragment : Fragment() {
 
                     if (me != null) {
                         Glide.with(view.context).load(me.profileImage).into(userImage)
+
                         userName.text = me.name
                     }
-                } else {
+                }
+                else {
                     Log.e("Search", it.exception.toString())
                 }
-            }.addOnFailureListener {
+            }.addOnFailureListener{
                 Log.e("Search", it.message.toString())
             }
         }
     }
 
+    //Function getting users i'm looking for
     fun getUsers(name: String){
         FireHelper.Users.get().addOnCompleteListener {
             if(it.isSuccessful){

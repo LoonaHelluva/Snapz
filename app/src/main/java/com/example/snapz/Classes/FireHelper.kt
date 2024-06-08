@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat.startActivity
 import com.example.snapz.Chat
@@ -51,6 +52,15 @@ class FireHelper {
 
         fun uploadFileToStorage(context: Context, uri: Uri, chatId: String = "", sender: String = ""){
             val imageRef = Storage.child(fileName(context, uri))
+            val realtime = Chats.child(chatId).child("Messages")
+
+            val empty = MessageModel(
+                id =  realtime.push().key.toString(),
+                type = "Image",
+                link = "Loading",
+                text = "",
+                sender = sender)
+            realtime.child(empty.id).setValue(empty)
 
             val uploadTask = imageRef.putFile(uri).continueWithTask { task ->
                 if(!task.isSuccessful){
@@ -60,16 +70,12 @@ class FireHelper {
                 return@continueWithTask imageRef.downloadUrl
             }.addOnCompleteListener {
                 if(it.isSuccessful){
-
-                    val realtime = Chats.child(chatId).child("Messages")
-
                     val message = MessageModel(
-                        id =  realtime.push().key.toString(),
+                        id =  empty.id,
                         type = "Image",
                         link = it.result.toString(),
                         text = "",
-                        sender = sender
-                    )
+                        sender = sender)
 
                     realtime.child(message.id).setValue(message)
                 }
@@ -170,6 +176,7 @@ class FireHelper {
             Chats.child(chatId).child("Messages").child(mymessage.id).setValue(mymessage).addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.d("Message", "Message sent")
+                    Chat.scroll.fullScroll(View.FOCUS_DOWN)
                 } else {
                     Log.e("Message", it.exception.toString())
                 }

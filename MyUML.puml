@@ -1,0 +1,40 @@
+@startuml
+class com.example.snapz.Classes.MessageModel {
++ <<Create>> MessageModel(,String,,String,,String,,String,,String)
+}
+
+class com.example.snapz.Classes.FireHelper$Companion {
++  auth
++  user
++  Chats
++  Users
++  Storage
++  me
++ void deleteMessage(MessageModel,String)
++ void editMessage(MessageModel,String,String)
++ void deleteImage(MessageModel,String)
++ void uploadFileToStorage(Context,Uri,String,String)
++ String getType(Context,Uri)
++ String fileName(Context,Uri)
++ void createNewUser(String,String,String,Context)
++ void createNewChat(String,String,String)
++ void isChatExist(String)
++ void sendMessage(String,String,String,String)
++ Boolean isMyNameExist(String,UserModel)
+}
+
+
+class com.example.snapz.Classes.FireHelper {
+}
+class com.example.snapz.Classes.UserModel {
++ <<Create>> UserModel(,String,,String,,String,,String)
+}
+
+class com.example.snapz.Classes.ChatModel {
++ <<Create>> ChatModel(,String,,String,,String)
+}
+
+
+
+com.example.snapz.Classes.FireHelper +.. com.example.snapz.Classes.FireHelper$Companion
+@enduml

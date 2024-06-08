@@ -12,7 +12,7 @@
         android:id="@+id/tvChatName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/poppins_semibold"
         android:text="TextView"
         android:textColor="@color/white"
@@ -22,16 +22,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/scMessages"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="80dp"
+        android:maxHeight="560dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvChatName"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/tvChatName">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMessages"
@@ -103,21 +103,20 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ibEditDone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/ibEditDone"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/done_button_rounded"
         android:backgroundTint="#15D049"
         android:contentDescription="done button"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/ibSendMessage"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        app:layout_constraintTop_toTopOf="@+id/etEditMessage"
         app:srcCompat="@drawable/done_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

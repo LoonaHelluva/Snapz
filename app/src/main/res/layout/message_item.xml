@@ -56,14 +56,36 @@
 
                 <ImageView
                     android:id="@+id/ivSent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:maxWidth="350dp"
                     android:maxHeight="300dp"
                     android:padding="0dp"
                     tools:srcCompat="@tools:sample/avatars" />
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvLoading"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/second"
+            android:foregroundGravity="center_vertical|center_horizontal"
+            app:cardBackgroundColor="@color/second"
+            app:cardCornerRadius="23dp"
+            app:contentPadding="0dp"
+            app:flow_horizontalAlign="center"
+            app:flow_verticalAlign="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="center" />
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -111,12 +133,13 @@
 
                 <ImageView
                     android:id="@+id/ivRecived"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:maxWidth="350dp"
                     android:maxHeight="300dp"
                     tools:srcCompat="@tools:sample/avatars" />
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,7 +29,7 @@
         <activity
             android:name=".Chat"
             android:exported="false"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".SignIn"
             android:exported="false" />

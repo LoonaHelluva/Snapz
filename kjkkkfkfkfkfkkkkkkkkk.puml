@@ -1,0 +1,255 @@
+@startuml
+class com.example.snapz.noInternet {
++ void onCreate(Bundle?)
+}
+
+class com.example.snapz.adapters.ChatsAdapter$ViewHolder {
++ ImageView chatImage
++ TextView chatName
++ ConstraintLayout lay
++ <<Create>> ViewHolder(View)
+}
+
+
+class com.example.snapz.adapters.ChatsAdapter {
++  chats
++  me
++ <<Create>> ChatsAdapter(MutableList<ChatModel>,UserModel)
++ ViewHolder onCreateViewHolder(ViewGroup,Int)
++ void onBindViewHolder(ViewHolder,Int)
++ Int getItemCount()
+}
+
+
+interface com.example.snapz.adapters.OnLongCLickListener {
++ void onLongClickMessageLIstener(Int,View)
++ void onLognClickImageListener(Int,View)
+}
+
+class com.example.snapz.adapters.MessageAdapter$ViewHolder {
++ ConstraintLayout sent
++ TextView messageSent
++ ConstraintLayout imageSentLay
++ ImageView imageSent
++ ConstraintLayout received
++ TextView messageReceived
++ ConstraintLayout imageReceivedLay
++ ImageView imageReceived
++ <<Create>> ViewHolder(View,OnLongCLickListener)
+}
+
+
+class com.example.snapz.adapters.MessageAdapter {
++  messages
++ <<Create>> MessageAdapter(MutableList<MessageModel>,OnLongCLickListener)
++ ViewHolder onCreateViewHolder(ViewGroup,Int)
++ Int getItemCount()
++ void onBindViewHolder(ViewHolder,Int)
+}
+
+
+class com.example.snapz.adapters.SearchAdapter$ViewHolder {
++  userImage
++  userName
++ <<Create>> ViewHolder(View)
+}
+
+
+class com.example.snapz.adapters.SearchAdapter {
++  users
++ <<Create>> SearchAdapter(View,ArrayList<UserModel>)
++ ViewHolder onCreateViewHolder(ViewGroup,Int)
++ Int getItemCount()
++ void onBindViewHolder(ViewHolder,Int)
+}
+
+
+class com.example.snapz.Classes.FireHelper$Companion {
++  auth
++  user
++  Chats
++  Users
++  Storage
++  me
++ void deleteMessage(MessageModel,String)
++ void editMessage(MessageModel,String,String)
++ void deleteImage(MessageModel,String)
++ void uploadFileToStorage(Context,Uri,String,String)
++ String getType(Context,Uri)
++ String fileName(Context,Uri)
++ void createNewUser(String,String,String,Context)
++ void createNewChat(String,String,String)
++ void isChatExist(String)
++ void sendMessage(String,String,String,String)
++ Boolean isMyNameExist(String,UserModel)
+}
+
+
+class com.example.snapz.Classes.FireHelper {
+}
+class com.example.snapz.MainActivity {
++ BottomNavigationView menu
++ FrameLayout frame
++ void onCreate(Bundle?)
++ Boolean menuClicked(Int)
++ void replace(Fragment)
+}
+
+
+class com.example.snapz.SignUp {
++ Button toSignIn
++ EditText upEmail
++ EditText upName
++ EditText upPassword
++ Button btSignUp
++ void onCreate(Bundle?)
++ void toSignInClicked()
++ void signUpCLicked()
+}
+
+
+class com.example.snapz.Splash {
++  TAG
++ void onCreate(Bundle?)
+- Boolean checkUser()
+- Boolean checkInternet()
+- void getMe()
+}
+
+
+class com.example.snapz.fragments.SettingsFragment {
++ ImageButton profImage
++ EditText userName
++ ImageButton done_button
++ Button log_out_btn
++ void onCreate(Bundle?)
++ void onCreateView(void,LayoutInflater,ViewGroup?,void,Bundle?)
++ void null()
++ void onViewCreated(View,Bundle?)
++ void setThePage()
++ void changeProfImage()
++ void onActivityResult(Int,Int,Intent?)
++ void changeName(String)
++ String separateNames(String,String)
++ Boolean isMyNameExist(String)
+}
+
+
+class com.example.snapz.SignIn {
++ Button toSignUp
++ EditText inEmail
++ EditText inPassword
++ Button btSignIn
++ void onCreate(Bundle?)
++ void signIn()
+}
+
+
+class com.example.snapz.Classes.MessageModel {
++ <<Create>> MessageModel(,String,,String,,String,,String,,String)
+}
+
+class com.example.snapz.fragments.ChatsFragment$Companion {
++ MutableList<ChatModel> chats
++ ChatsAdapter adapter
++  isLoaded
+}
+
+class com.example.snapz.fragments.ChatsFragment {
++ TextView userName
++ ImageView userImage
++ RecyclerView chatsRv
++ void onCreate(Bundle?)
++ void onCreateView(void,LayoutInflater,ViewGroup?,void,Bundle?)
++ void null()
++ void onViewCreated(View,Bundle?)
++ void onResume()
++ Boolean isMyNameExist(String)
++ void loadChats()
++ void getMe()
+}
+
+
+class com.example.snapz.Classes.UserModel {
++ <<Create>> UserModel(,String,,String,,String,,String)
+}
+
+class com.example.snapz.Classes.ChatModel {
++ <<Create>> ChatModel(,String,,String,,String)
+}
+
+class com.example.snapz.fragments.SearchFragment {
++ ImageView userImage
++ TextView userName
++ RecyclerView rvUsers
++ ImageButton btSearch
++ EditText search
++ ArrayList<UserModel> users
++ SearchAdapter adapter
++ void onCreate(Bundle?)
++ void onCreateView(void,LayoutInflater,ViewGroup?,void,Bundle?)
++ void null()
++ void onViewCreated(View,Bundle?)
++ void getMe(View)
++ void getUsers(String)
+}
+
+
+class com.example.snapz.Chat$Companion {
++  exist
+}
+
+class com.example.snapz.Chat {
++ TextView chatName
++ RecyclerView rvMessages
++ ImageButton chooseFile
++ EditText etMessage
++ ImageButton ibSendMessage
++ EditText etMessageEdit
++ ImageButton ibEditDone
++ MessageAdapter adapter
++ ScrollView scroll
++ String chatWithId
++ String chatWithName
++ String chatWithImage
++ String chatId
++  messages
++ void onCreate(Bundle?)
++ void onActivityResult(Int,Int,Intent?)
++ void getFile()
++ void getMe()
++ void imageLongListener(Int,View)
++ void messageLongListener(Int,View)
+- void hideSendLay()
+- void showSendLay()
+- void hideEditLay()
+- void showEditLay()
++ void refreshMessages()
++ void onPause()
+}
+
+
+
+
+androidx.appcompat.app.AppCompatActivity <|-- com.example.snapz.noInternet
+com.example.snapz.adapters.ChatsAdapter +.. com.example.snapz.adapters.ChatsAdapter$ViewHolder
+com.example.snapz.adapters.ViewHolder <|-- com.example.snapz.adapters.ChatsAdapter$ViewHolder
+com.example.snapz.adapters.Adapter <|-- com.example.snapz.adapters.ChatsAdapter
+com.example.snapz.adapters.MessageAdapter +.. com.example.snapz.adapters.MessageAdapter$ViewHolder
+com.example.snapz.adapters.ViewHolder <|-- com.example.snapz.adapters.MessageAdapter$ViewHolder
+com.example.snapz.adapters.Adapter <|-- com.example.snapz.adapters.MessageAdapter
+com.example.snapz.adapters.SearchAdapter +.. com.example.snapz.adapters.SearchAdapter$ViewHolder
+com.example.snapz.adapters.ViewHolder <|-- com.example.snapz.adapters.SearchAdapter$ViewHolder
+com.example.snapz.adapters.Adapter <|-- com.example.snapz.adapters.SearchAdapter
+com.example.snapz.Classes.FireHelper +.. com.example.snapz.Classes.FireHelper$Companion
+androidx.appcompat.app.AppCompatActivity <|-- com.example.snapz.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.snapz.SignUp
+androidx.appcompat.app.AppCompatActivity <|-- com.example.snapz.Splash
+androidx.fragment.app.Fragment <|-- com.example.snapz.fragments.SettingsFragment
+androidx.appcompat.app.AppCompatActivity <|-- com.example.snapz.SignIn
+com.example.snapz.fragments.ChatsFragment +.. com.example.snapz.fragments.ChatsFragment$Companion
+androidx.fragment.app.Fragment <|-- com.example.snapz.fragments.ChatsFragment
+androidx.fragment.app.Fragment <|-- com.example.snapz.fragments.SearchFragment
+com.example.snapz.Chat +.. com.example.snapz.Chat$Companion
+androidx.appcompat.app.AppCompatActivity <|-- com.example.snapz.Chat
+@enduml

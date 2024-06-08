@@ -1,0 +1,37 @@
+@startuml
+class com.example.snapz.fragments.SettingsFragment {
++ ImageButton profImage
++ EditText userName
++ ImageButton done_button
++ Button log_out_btn
+}
+
+class com.example.snapz.fragments.ChatsFragment$Companion {
++ MutableList<ChatModel> chats
++ ChatsAdapter adapter
++  isLoaded
+}
+
+class com.example.snapz.fragments.ChatsFragment {
++ TextView userName
++ ImageView userImage
++ RecyclerView chatsRv
+}
+
+class com.example.snapz.fragments.SearchFragment {
++ ImageView userImage
++ TextView userName
++ RecyclerView rvUsers
++ ImageButton btSearch
++ EditText search
++ ArrayList<UserModel> users
++ SearchAdapter adapter
+}
+
+
+
+androidx.fragment.app.Fragment <|-- com.example.snapz.fragments.SettingsFragment
+com.example.snapz.fragments.ChatsFragment +.. com.example.snapz.fragments.ChatsFragment$Companion
+androidx.fragment.app.Fragment <|-- com.example.snapz.fragments.ChatsFragment
+androidx.fragment.app.Fragment <|-- com.example.snapz.fragments.SearchFragment
+@enduml

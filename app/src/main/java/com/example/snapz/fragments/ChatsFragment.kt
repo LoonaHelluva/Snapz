@@ -69,17 +69,12 @@ class ChatsFragment : Fragment() {
             Glide.with(requireContext()).load(me.profileImage).into(userImage)
         }
 
-
         fireHelper.Chats.addChildEventListener(object: ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?){
                 val chat = snapshot.getValue(ChatModel::class.java)
 
                 if(chat != null && isMyNameExist(chat.name)){
-                    chat.name = if(chat.name.contains("${me.name}+")){chat.name.replace("${me.name}+", "")}
-                                else{chat.name.replace("+${me.name}", "")}
-                    chats.add(chat)
-
-                    adapter.notifyDataSetChanged()
+                    loadChats()
                 }
             }
 
@@ -93,12 +88,6 @@ class ChatsFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        chats.clear()
     }
 
     fun isMyNameExist(name: String) : Boolean{
@@ -133,6 +122,8 @@ class ChatsFragment : Fragment() {
     fun loadChats(){
         fireHelper.Chats.get().addOnCompleteListener {
             if(it.isSuccessful){
+                chats.clear()
+                adapter.notifyDataSetChanged()
                 for(i in it.result.children){
                     val chat = i.getValue(ChatModel::class.java)
 
@@ -145,9 +136,9 @@ class ChatsFragment : Fragment() {
                             chat.name.replace("+${me.name}", "")
                         }
                         chats.add(chat)
+                        adapter.notifyItemInserted(chats.size - 1)
                     }
                 }
-                adapter.notifyDataSetChanged()
             }
         }
     }

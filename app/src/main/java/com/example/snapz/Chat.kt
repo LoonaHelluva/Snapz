@@ -10,6 +10,7 @@ import android.widget.Adapter
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.PopupMenu
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -29,6 +30,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import java.text.FieldPosition
 import com.example.snapz.Classes.FireHelper.Companion.me
+import kotlinx.coroutines.delay
 
 class Chat : AppCompatActivity() {
 
@@ -43,7 +45,16 @@ class Chat : AppCompatActivity() {
     lateinit var etMessageEdit: EditText
     lateinit var ibEditDone: ImageButton
 
-    lateinit var adapter: MessageAdapter
+    var adapter = MessageAdapter(messages, object : OnLongCLickListener{
+        override fun onLongClickMessageLIstener(position: Int, view: View) {
+            messageLongListener(position, view)
+        }
+
+        override fun onLognClickImageListener(position: Int, view: View) {
+            imageLongListener(position, view)
+        }
+
+    })
 
     //Users
     lateinit var chatWithId: String
@@ -53,10 +64,14 @@ class Chat : AppCompatActivity() {
     //Chat
     lateinit var chatId: String
 
-    var messages = mutableListOf<MessageModel>()
-
     companion object{
         var exist = false
+
+        lateinit var scroll: ScrollView
+
+        var messages = mutableListOf<MessageModel>()
+
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +85,8 @@ class Chat : AppCompatActivity() {
         }
 
         //Initializing views
+        scroll = findViewById(R.id.scMessages)
+
         chatName = findViewById(R.id.tvChatName)
         rvMessages = findViewById(R.id.rvMessages)
 
@@ -141,17 +158,7 @@ class Chat : AppCompatActivity() {
             }
         }
 
-        adapter = MessageAdapter(messages, object : OnLongCLickListener{
-            override fun onLongClickMessageLIstener(position: Int, view: View) {
-                messageLongListener(position, view)
-            }
-
-            override fun onLognClickImageListener(position: Int, view: View) {
-                imageLongListener(position, view)
-            }
-
-        })
-
+        rvMessages = findViewById(R.id.rvMessages)
         rvMessages.layoutManager = LinearLayoutManager(this)
         rvMessages.adapter = adapter
 
@@ -162,6 +169,8 @@ class Chat : AppCompatActivity() {
             if(exist){
                 if(etMessage.text.toString().trim() != ""){
                     FireHelper.sendMessage(etMessage.text.toString().trim(), chatId)
+                    etMessage.setText("")
+                    scroll.fullScroll(View.FOCUS_DOWN)
                 }
                 else{
                     Toast.makeText(this, "Field can't be empty", Toast.LENGTH_SHORT).show()
@@ -179,20 +188,21 @@ class Chat : AppCompatActivity() {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val message = snapshot.getValue(MessageModel::class.java)
 
-                if(message != null){
+                if (message != null && message !in messages) {
                     messages.add(message)
 
                     adapter.notifyItemInserted(messages.size - 1)
                 }
+                scroll.fullScroll(View.FOCUS_DOWN)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 refreshMessages()
-            }
+           }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 refreshMessages()
-            }
+           }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
 
@@ -203,6 +213,8 @@ class Chat : AppCompatActivity() {
             }
 
         })
+
+        scroll.fullScroll(View.FOCUS_DOWN)
     }
 
     @Deprecated("Deprecated in Java")
@@ -348,6 +360,7 @@ class Chat : AppCompatActivity() {
 
                 })
                 rvMessages.adapter = adapter
+                scroll.fullScroll(View.FOCUS_DOWN)
             }
         }
     }

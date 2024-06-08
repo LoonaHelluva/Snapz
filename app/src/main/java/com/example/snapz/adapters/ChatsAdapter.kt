@@ -1,6 +1,7 @@
 package com.example.snapz.adapters
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.snapz.Chat
 import com.example.snapz.Classes.ChatModel
+import com.example.snapz.Classes.FireHelper
+import com.example.snapz.Classes.MessageModel
 import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import java.util.zip.Inflater
@@ -35,9 +38,22 @@ class ChatsAdapter(chats: MutableList<ChatModel>, me: UserModel) : RecyclerView.
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chat = chats[position]
+        val image = chat.image.replace(FireHelper.me.profileImage, "")
+
+        Log.d("IMAGE", chat.image.contains(FireHelper.me.profileImage).toString())
+
+        if(chat.name.contains(me.name)){
+            chat.image = chat.image.replace(FireHelper.me.profileImage, "")
+            chat.name = if(chat.name.contains("${FireHelper.me.name}+")){
+                chat.name.replace("${FireHelper.me.name}+", "").toString()
+            }
+            else{
+                chat.name.replace("+${FireHelper.me.name}", "")
+            }
+        }
 
         holder.chatName.text = chat.name
-        Glide.with(holder.itemView.context).load(chat.image).into(holder.chatImage)
+        Glide.with(holder.itemView.context).load(image).into(holder.chatImage)
 
         holder.lay.setOnClickListener{
             val intent = Intent(holder.itemView.context, Chat::class.java)
@@ -47,6 +63,18 @@ class ChatsAdapter(chats: MutableList<ChatModel>, me: UserModel) : RecyclerView.
             intent.putExtra("meName", me.name)
             intent.putExtra("meId", me.id)
             intent.putExtra("meImage", me.profileImage)
+
+            FireHelper.Chats.child(chat.id).child("Messages").get().addOnCompleteListener {
+                if(it.isSuccessful){
+                    for(m in it.result!!.children){
+                        val message = m.getValue(MessageModel::class.java)
+
+                        if(message != null){
+                            Chat.messages.add(message)
+                        }
+                    }
+                }
+            }
 
             startActivity(holder.itemView.context, intent, null)
         }

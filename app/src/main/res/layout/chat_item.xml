@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chatsConstraintLay"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/black"
+    android:backgroundTint="@color/black">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView5"
@@ -39,4 +41,14 @@
         app:layout_constraintBottom_toBottomOf="@+id/cardView5"
         app:layout_constraintStart_toEndOf="@+id/cardView5"
         app:layout_constraintTop_toTopOf="@+id/cardView5" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvOnline"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@android:color/holo_green_light"
+        android:backgroundTint="@android:color/holo_green_light"
+        app:cardCornerRadius="100dp"
+        app:layout_constraintStart_toEndOf="@+id/cardView5"
+        app:layout_constraintTop_toBottomOf="@+id/chatName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

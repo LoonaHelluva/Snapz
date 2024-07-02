@@ -1,5 +1,6 @@
 package com.example.snapz.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager.OnActivityDestroyListener
@@ -20,6 +21,8 @@ import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import com.google.firebase.Firebase
 import com.example.snapz.Classes.FireHelper.Companion.me
+import com.example.snapz.MainActivity
+import com.example.snapz.SignUp
 
 class SettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +73,10 @@ class SettingsFragment : Fragment() {
 
         log_out_btn.setOnClickListener {
             FireHelper.auth.signOut()
+            val intent = Intent(requireContext(), SignUp::class.java)
+
+            startActivity(intent)
+            requireActivity().finish()
         }
     }
 
@@ -144,7 +151,12 @@ class SettingsFragment : Fragment() {
 
                 FireHelper.Users.child(me.id).child("profileImage").setValue(link).addOnCompleteListener {
                     if(it.isSuccessful){
-                        setThePage()
+                        FireHelper.Users.child(me.id).get().addOnCompleteListener {
+                            if(it.isSuccessful){
+                                me = it.result.getValue(UserModel::class.java)!!
+                                setThePage()
+                            }
+                        }
                     }
                 }
             }
@@ -168,8 +180,16 @@ class SettingsFragment : Fragment() {
                             }
                         }
                     }
-                    realtime.child("name").setValue(name)
-                    setThePage()
+                    realtime.child("name").setValue(name).addOnCompleteListener {
+                        if(it.isSuccessful){
+                            FireHelper.Users.child(me.id).get().addOnCompleteListener {
+                                if(it.isSuccessful){
+                                    me = it.result.getValue(UserModel::class.java)!!
+                                    setThePage()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

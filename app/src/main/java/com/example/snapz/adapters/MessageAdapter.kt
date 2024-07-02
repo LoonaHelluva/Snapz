@@ -2,6 +2,7 @@ package com.example.snapz.adapters
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -29,16 +30,15 @@ interface OnLongCLickListener{
     fun onLognClickImageListener(position: Int, view: View)
 }
 
-class MessageAdapter(messages: MutableList<MessageModel>, val onLongListener: OnLongCLickListener) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(mess: MutableList<MessageModel>, val onLongListener: OnLongCLickListener) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
-    val messages = messages
+    private val messages = mess
 
     class ViewHolder(viewItem: View, onLongListener: OnLongCLickListener) : RecyclerView.ViewHolder(viewItem) {
         val sent: ConstraintLayout = viewItem.findViewById(R.id.sentLay)
         val messageSent: TextView = viewItem.findViewById(R.id.tvSent)
         val imageSentLay: ConstraintLayout = viewItem.findViewById(R.id.imageSent)
         val imageSent: ImageView = viewItem.findViewById(R.id.ivSent)
-        val loading: CardView = viewItem.findViewById(R.id.cvLoading)
 
         val received: ConstraintLayout = viewItem.findViewById(R.id.recivedLay)
         val messageReceived: TextView = viewItem.findViewById(R.id.tvRecived)
@@ -51,7 +51,6 @@ class MessageAdapter(messages: MutableList<MessageModel>, val onLongListener: On
                 return@setOnLongClickListener true
             }
             imageSentLay.setOnLongClickListener {
-
                 onLongListener.onLognClickImageListener(adapterPosition, itemView)
                 return@setOnLongClickListener true
             }
@@ -67,60 +66,54 @@ class MessageAdapter(messages: MutableList<MessageModel>, val onLongListener: On
         return messages.size
     }
 
+    fun addMessage(message: MessageModel){
+        messages.add(message)
+        Log.e("ADAPTERR", "Adding new message: ${message.type}\n" +
+                                                        "${message.link}\n" +
+                                                        "${messages.size-1}")
+        notifyItemInserted(messages.size - 1)
+
+        Chat.scroll.fullScroll(View.FOCUS_DOWN)
+
+    }
+
+    fun removeMessage(position: Int){
+        messages.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun changeMessage(position: Int, message: MessageModel){
+        messages[position] = message
+        notifyItemChanged(position)
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val sender: Boolean = messages[position].sender == FireHelper.user!!.uid
+        val sender: Boolean = messages[position].sender == FireHelper.me.id
         val type: String = messages[position].type
         val message: String = messages[position].text
         val link: String = messages[position].link
 
-        if (sender) {
+
+        if (sender){
+            Log.e("Adapter's Message", "Got new message: $type")
             holder.received.visibility = View.GONE
 
             if (type == "Text") {
                 holder.imageSentLay.visibility = View.GONE
-                holder.loading.visibility = View.GONE
 
                 holder.messageSent.visibility = View.VISIBLE
                 holder.messageSent.text = message
             }
-            else {
+            if (type == "Image") {
+                Log.e("TAG", "Link: $link")
                 holder.messageSent.visibility = View.GONE
 
-                if(link == "Loading"){
-                    holder.imageSentLay.visibility = View.GONE
-                    holder.loading.visibility = View.VISIBLE
-                }
-                else{
-                    holder.loading.visibility = View.GONE
-                    Glide.with(holder.itemView.context)
-                        .load(link)
-                        .listener(object: RequestListener<Drawable>{
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                resource: Drawable,
-                                model: Any,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                Chat.scroll.fullScroll(View.FOCUS_DOWN)
-                                return false
-                            }
-
-                        })
-                        .into(holder.imageSent)
-
-                    Chat.scroll.fullScroll(View.FOCUS_DOWN)
-                }
+                Glide.with(holder.itemView.context)
+                    .load(link)
+                    .placeholder(R.drawable.done_icon)
+                    .fitCenter()
+                    .into(holder.imageSent)
             }
         } else {
             holder.sent.visibility = View.GONE
@@ -136,28 +129,6 @@ class MessageAdapter(messages: MutableList<MessageModel>, val onLongListener: On
                 Glide.with(holder.itemView.context)
                     .load(link)
                     .fitCenter()
-                    .listener(object: RequestListener<Drawable>{
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: Drawable,
-                            model: Any,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            Chat.scroll.fullScroll(View.FOCUS_DOWN)
-                            return false
-                        }
-
-                    })
                     .into(holder.imageReceived)
 
                 Chat.scroll.fullScroll(View.FOCUS_DOWN)

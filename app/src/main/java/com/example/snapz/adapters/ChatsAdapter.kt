@@ -65,18 +65,6 @@ class ChatsAdapter(chats: MutableList<ChatModel>, me: UserModel) : RecyclerView.
             intent.putExtra("meId", me.id)
             intent.putExtra("meImage", me.profileImage)
 
-            FireHelper.Chats.child(chat.id).child("Messages").get().addOnCompleteListener {
-                if(it.isSuccessful){
-                    for(m in it.result!!.children){
-                        val message = m.getValue(MessageModel::class.java)
-
-                        if(message != null){
-                            Chat.messages.add(message)
-                        }
-                    }
-                }
-            }
-
             startActivity(holder.itemView.context, intent, null)
         }
     }

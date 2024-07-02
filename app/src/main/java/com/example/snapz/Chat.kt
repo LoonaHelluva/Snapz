@@ -2,6 +2,7 @@ package com.example.snapz
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Message
 import android.util.Log
@@ -14,6 +15,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
@@ -31,6 +33,7 @@ import com.google.firebase.database.DatabaseError
 import java.text.FieldPosition
 import com.example.snapz.Classes.FireHelper.Companion.me
 import kotlinx.coroutines.delay
+import java.util.ArrayList
 
 class Chat : AppCompatActivity() {
 
@@ -44,6 +47,8 @@ class Chat : AppCompatActivity() {
 
     lateinit var etMessageEdit: EditText
     lateinit var ibEditDone: ImageButton
+
+
 
     var adapter = MessageAdapter(messages, object : OnLongCLickListener{
         override fun onLongClickMessageLIstener(position: Int, view: View) {
@@ -64,15 +69,18 @@ class Chat : AppCompatActivity() {
     //Chat
     lateinit var chatId: String
 
+
     companion object{
         var exist = false
-
-        lateinit var scroll: ScrollView
-
         var messages = mutableListOf<MessageModel>()
+        lateinit var scroll: ScrollView
+    }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,7 +178,6 @@ class Chat : AppCompatActivity() {
                 if(etMessage.text.toString().trim() != ""){
                     FireHelper.sendMessage(etMessage.text.toString().trim(), chatId)
                     etMessage.setText("")
-                    scroll.fullScroll(View.FOCUS_DOWN)
                 }
                 else{
                     Toast.makeText(this, "Field can't be empty", Toast.LENGTH_SHORT).show()
@@ -181,35 +188,37 @@ class Chat : AppCompatActivity() {
             }
         }
 
-        chooseFile.setOnClickListener { getFile() }
+        chooseFile.setOnClickListener {
+            Log.e("Size on click", messages.size.toString())
+            getFile()
+        }
         //Firebase listener
 
         FireHelper.Chats.child(chatId).child("Messages").addChildEventListener(object: ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val message = snapshot.getValue(MessageModel::class.java)
 
-                if (message != null && message !in messages) {
-                    messages.add(message)
+                Log.e("Message", "got new message")
+                Log.e("Message", messages.size.toString())
+                if (message != null) {
+                    adapter.addMessage(message)
 
-                    adapter.notifyItemInserted(messages.size - 1)
+                    scroll.fullScroll(View.FOCUS_DOWN)
                 }
-                scroll.fullScroll(View.FOCUS_DOWN)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 refreshMessages()
-           }
+            }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 refreshMessages()
-           }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
             }
 
-            override fun onCancelled(error: DatabaseError) {
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
 
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseListener", error.message)
             }
 
         })
@@ -217,10 +226,16 @@ class Chat : AppCompatActivity() {
         scroll.fullScroll(View.FOCUS_DOWN)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        messages.clear()
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        Log.e("Size OnResult", messages.size.toString())
         if(data?.data != null){
             FireHelper.uploadFileToStorage(this, data.data!!, chatId, me.id)
         }
@@ -230,6 +245,7 @@ class Chat : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
 
+        Log.e("Size getFile", messages.size.toString())
         startActivityForResult(intent, 1)
     }
 
@@ -286,6 +302,9 @@ class Chat : AppCompatActivity() {
                         if(message != ""){
                             if(message != messages[position].text){
                                 FireHelper.editMessage(messages[position], chatId, message)
+                                val changedMessage = messages[position]
+                                changedMessage.text = message
+                                adapter.changeMessage(position, changedMessage)
                             }
                         }
                         else{
@@ -295,8 +314,6 @@ class Chat : AppCompatActivity() {
                         hideEditLay()
 
                         showSendLay()
-
-                        adapter.notifyItemChanged(position)
                     }
 
 
@@ -304,7 +321,7 @@ class Chat : AppCompatActivity() {
                 }
                 R.id.messageDelete ->{
                     FireHelper.deleteMessage(messages[position], chatId)
-                    adapter.notifyItemRemoved(position)
+                    adapter.removeMessage(position)
                     true
                 }
                 else ->{
@@ -363,23 +380,6 @@ class Chat : AppCompatActivity() {
                 scroll.fullScroll(View.FOCUS_DOWN)
             }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        messages.clear()
-
-        adapter = MessageAdapter(messages, object : OnLongCLickListener{
-            override fun onLongClickMessageLIstener(position: Int, view: View) {
-                messageLongListener(position, view)
-            }
-
-            override fun onLognClickImageListener(position: Int, view: View) {
-                imageLongListener(position, view)
-            }
-
-        })
     }
 
 }

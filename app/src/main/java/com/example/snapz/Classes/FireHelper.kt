@@ -51,16 +51,9 @@ class FireHelper {
         }
 
         fun uploadFileToStorage(context: Context, uri: Uri, chatId: String = "", sender: String = ""){
+            Log.e("Size Upload", Chat.messages.size.toString())
             val imageRef = Storage.child(fileName(context, uri))
             val realtime = Chats.child(chatId).child("Messages")
-
-            val empty = MessageModel(
-                id =  realtime.push().key.toString(),
-                type = "Image",
-                link = "Loading",
-                text = "",
-                sender = sender)
-            realtime.child(empty.id).setValue(empty)
 
             val uploadTask = imageRef.putFile(uri).continueWithTask { task ->
                 if(!task.isSuccessful){
@@ -71,7 +64,7 @@ class FireHelper {
             }.addOnCompleteListener {
                 if(it.isSuccessful){
                     val message = MessageModel(
-                        id =  empty.id,
+                        id =  realtime.push().key.toString(),
                         type = "Image",
                         link = it.result.toString(),
                         text = "",
@@ -80,6 +73,7 @@ class FireHelper {
                     realtime.child(message.id).setValue(message)
                 }
             }
+            Log.e("Size Upload end", Chat.messages.size.toString())
         }
 
         fun getType(context: Context, uri: Uri) : String{
@@ -91,7 +85,7 @@ class FireHelper {
             val name = System.currentTimeMillis().toString()
             val type = getType(context, uri)
 
-            return name + "." + type
+            return name + ".jpg"
         }
 
         fun createNewUser(email: String, password: String, name: String, context: Context) {
@@ -175,8 +169,8 @@ class FireHelper {
 
             Chats.child(chatId).child("Messages").child(mymessage.id).setValue(mymessage).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Log.d("Message", "Message sent")
                     Chat.scroll.fullScroll(View.FOCUS_DOWN)
+                    Log.d("Message", "Message sent")
                 } else {
                     Log.e("Message", it.exception.toString())
                 }

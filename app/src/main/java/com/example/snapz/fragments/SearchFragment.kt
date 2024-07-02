@@ -19,6 +19,7 @@ import com.example.snapz.Classes.UserModel
 import com.example.snapz.R
 import com.example.snapz.adapters.SearchAdapter
 import com.example.snapz.Classes.FireHelper.Companion.me
+import java.util.Locale
 
 class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +70,7 @@ class SearchFragment : Fragment() {
         //OnClick listeners
         btSearch.setOnClickListener {
             if(search.text.toString().trim() != ""){
-                getUsers(search.text.toString().trim())
+                getUsers(search.text.toString().toLowerCase(Locale.ROOT).trim())
             }
             else{
                 Toast.makeText(requireContext(), "Search can't be empty", Toast.LENGTH_SHORT).show()
@@ -110,7 +111,7 @@ class SearchFragment : Fragment() {
                 for(i in it.result.children){
                     val user = i.getValue(UserModel::class.java)
 
-                    if(user != null && user.id != FireHelper.user!!.uid && user.name.contains(name)){
+                    if(user != null && user.id != FireHelper.user!!.uid && user.name.toLowerCase(Locale.ROOT).contains(name)){
                         users.add(user)
                         adapter.notifyItemInserted(users.size - 1)
                     }
